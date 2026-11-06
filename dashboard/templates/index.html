@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SSH Sentinel</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">&gt;_ SSH<span class="accent">SENTINEL</span></div>
+  <nav>
+    <a href="#overview">Overview</a><a href="#timeline">Timeline</a>
+    <a href="#credentials">Credentials</a><a href="#attackers">Attackers</a>
+    <a href="#sessions">Sessions</a><a href="#alerts">Alerts</a><a href="#events">Events</a>
+  </nav>
+  <div class="status">
+    <span id="hp-dot" class="dot"></span><span id="hp-text">checking...</span>
+  </div>
+</header>
+
+<main>
+  <form id="filters" class="panel filters">
+    <label>From <input type="date" id="start"></label>
+    <label>To <input type="date" id="end"></label>
+    <label>Source IP <input type="text" id="ip" placeholder="127.0.0.1" maxlength="45"></label>
+    <button type="submit">Apply</button>
+    <button type="button" id="reset" class="ghost">Reset</button>
+    <span class="spacer"></span>
+    <a id="dl-attacks" class="btn ghost" href="/api/export/attacks.csv">Attacks CSV</a>
+    <a id="dl-alerts" class="btn ghost" href="/api/export/alerts.csv">Alerts CSV</a>
+    <a id="dl-report" class="btn ghost" href="/api/report?download=1">Report</a>
+  </form>
+  <div id="error" class="error hidden"></div>
+  <div id="updated" class="muted right"></div>
+
+  <section id="overview">
+    <h2>// Overview</h2>
+    <div class="cards">
+      <div class="card"><div class="num" id="c-connections">0</div><div class="lbl">SSH connections</div></div>
+      <div class="card"><div class="num" id="c-failed">0</div><div class="lbl">Failed logins</div></div>
+      <div class="card"><div class="num" id="c-success">0</div><div class="lbl">Simulated logins</div></div>
+      <div class="card"><div class="num" id="c-ips">0</div><div class="lbl">Unique IPs</div></div>
+      <div class="card"><div class="num" id="c-attacks">0</div><div class="lbl">IPs with alerts</div></div>
+      <div class="card"><div class="num" id="c-alerts">0</div><div class="lbl">Alerts</div></div>
+    </div>
+  </section>
+
+  <section id="timeline" class="panel">
+    <div class="row">
+      <h2>// Attack timeline</h2>
+      <div class="toggle">
+        <button type="button" class="ghost active" data-by="hour">Hourly</button>
+        <button type="button" class="ghost" data-by="day">Daily</button>
+      </div>
+    </div>
+    <div class="chart-box"><canvas id="ch-timeline"></canvas></div>
+  </section>
+
+  <section id="credentials" class="grid-2">
+    <div class="panel">
+      <h2>// Targeted usernames</h2>
+      <div class="chart-box"><canvas id="ch-users"></canvas></div>
+    </div>
+    <div class="panel">
+      <h2>// Common passwords (masked)</h2>
+      <div id="t-passwords" class="table-wrap"></div>
+    </div>
+  </section>
+
+  <section id="attackers" class="panel">
+    <h2>// Attackers <span class="muted">(click a row to filter by IP)</span></h2>
+    <div id="t-attackers" class="table-wrap"></div>
+  </section>
+
+  <section id="sessions" class="panel">
+    <h2>// Session analysis</h2>
+    <div class="cards">
+      <div class="card"><div class="num" id="s-total">0</div><div class="lbl">Sessions</div></div>
+      <div class="card"><div class="num" id="s-avg">0</div><div class="lbl">Avg duration (s)</div></div>
+      <div class="card"><div class="num" id="s-max">0</div><div class="lbl">Longest (s)</div></div>
+      <div class="card"><div class="num" id="s-cmds">0</div><div class="lbl">Commands</div></div>
+    </div>
+    <div id="t-sessions" class="table-wrap"></div>
+  </section>
+
+  <section id="alerts" class="grid-2 wide-left">
+    <div class="panel">
+      <div class="row">
+        <h2>// Alerts</h2>
+        <div class="toggle">
+          <select id="f-sev"><option value="">all severities</option>
+            <option>low</option><option>medium</option><option>high</option><option>critical</option></select>
+          <select id="f-status"><option value="">all statuses</option>
+            <option>open</option><option>investigating</option><option>closed</option>
+            <option>false_positive</option></select>
+        </div>
+      </div>
+      <div id="t-alerts" class="table-wrap"></div>
+    </div>
+    <div class="panel">
+      <h2>// By severity</h2>
+      <div class="chart-box small"><canvas id="ch-sev"></canvas></div>
+    </div>
+  </section>
+
+  <section id="events" class="panel">
+    <div class="row">
+      <h2>// Events</h2>
+      <select id="f-type"><option value="">all types</option>
+        <option>connect</option><option>login_failed</option><option>login_success</option>
+        <option>command</option><option>session_closed</option></select>
+    </div>
+    <div id="t-events" class="table-wrap"></div>
+    <div class="row pager">
+      <button type="button" id="prev" class="ghost">&lt; Prev</button>
+      <span id="pager-info" class="muted"></span>
+      <button type="button" id="next" class="ghost">Next &gt;</button>
+    </div>
+    <div id="detail" class="detail hidden"></div>
+  </section>
+</main>
+
+<footer>Alerts are threshold-based signals for investigation, not proof of compromise.
+  Passwords are shown masked only.</footer>
+
+<script src="{{ url_for('static', filename='js/chart.umd.js') }}"></script>
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

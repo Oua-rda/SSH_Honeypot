@@ -1,0 +1,4 @@
+{
+  "brute_force": {"max_failures": 3, "window_s": 60},
+  "rapid_attack": {"max_failures": 6, "window_s": 30}
+}
