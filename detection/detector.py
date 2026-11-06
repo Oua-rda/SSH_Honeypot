@@ -1,7 +1,4 @@
-"""
-detection/detector.py
-Loads events from SQLite, runs the rules per source IP, stores new alerts.
-"""
+
 import argparse
 import json
 from collections import Counter, defaultdict

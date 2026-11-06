@@ -39,5 +39,4 @@ def create_app(db_path=DEFAULT_DB) -> Flask:
 
 
 if __name__ == "__main__":
-    # 127.0.0.1 = reachable only from this machine. debug stays OFF on purpose.
     create_app().run(host="127.0.0.1", port=5000, debug=False)

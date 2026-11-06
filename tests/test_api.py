@@ -82,8 +82,8 @@ def test_csv_export_is_safe(client):
     text = r.get_data(as_text=True)
     assert r.mimetype == "text/csv"
     assert text.splitlines()[0].startswith("id,timestamp,source_ip")
-    assert "secrethash" not in text            # password hash never exported
-    assert "'=cmd" in text                      # formula neutralised
+    assert "secrethash" not in text            
+    assert "'=cmd" in text                    
 
 
 def test_report(client):

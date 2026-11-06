@@ -1,8 +1,3 @@
-"""
-detection/detection_rules.py
-Rule-based detection. Each rule receives ONE IP's events (sorted by time)
-and returns a list of alert dicts. All thresholds live in DEFAULT_CONFIG.
-"""
 import re
 from collections import defaultdict, deque
 from datetime import datetime, timezone
@@ -20,7 +15,6 @@ DEFAULT_CONFIG = {
 
 DISCLAIMER = "This is a threshold-based signal, not proof of compromise."
 
-# category -> (severity, patterns)
 COMMAND_PATTERNS = {
     "reconnaissance": ("low", [r"\b(uname|whoami|id|ifconfig|netstat|lscpu|hostname)\b",
                                r"\bip\s+a\b", r"\bps\s+aux", r"/proc/(cpuinfo|meminfo)"]),
@@ -50,7 +44,6 @@ def _failures(events):
     return [e for e in events if e["event_type"] == "login_failed"]
 
 
-# ---- Rules 1 & 2: too many failures in a time window -----------------------
 def rule_failure_burst(ip, events, cfg, atype):
     alerts, window = [], deque()
     for e in _failures(events):
@@ -70,7 +63,6 @@ def rule_failure_burst(ip, events, cfg, atype):
     return alerts
 
 
-# ---- Rule 3: many different usernames --------------------------------------
 def rule_username_enumeration(ip, events, cfg):
     alerts, window = [], deque()
     for e in _failures(events):
@@ -87,7 +79,6 @@ def rule_username_enumeration(ip, events, cfg):
     return alerts
 
 
-# ---- Rule 4: same password, many usernames ---------------------------------
 def rule_password_spraying(ip, events, cfg):
     by_hash = defaultdict(list)
     for e in _failures(events):
@@ -112,7 +103,6 @@ def rule_password_spraying(ip, events, cfg):
     return alerts
 
 
-# ---- Rule 5: attacks repeated over several time periods --------------------
 def rule_repeated_attacks(ip, events, cfg):
     buckets = defaultdict(int)
     fails = _failures(events)
@@ -128,7 +118,6 @@ def rule_repeated_attacks(ip, events, cfg):
     return []
 
 
-# ---- Rule 6: success after repeated failures -------------------------------
 def rule_success_after_failures(ip, events, cfg):
     fails = _failures(events)
     alerts = []
@@ -146,7 +135,6 @@ def rule_success_after_failures(ip, events, cfg):
     return alerts
 
 
-# ---- Rule 7: suspicious commands (one alert per session) -------------------
 def rule_suspicious_commands(ip, events, cfg):
     sessions = {}
     for e in events:

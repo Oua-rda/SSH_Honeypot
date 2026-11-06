@@ -31,11 +31,11 @@ def test_brute_force_triggers_at_threshold():
 
 
 def test_slow_attempts_do_not_trigger():
-    assert "brute_force" not in types([ev(i * 20) for i in range(5)])   # 5 in 80s
+    assert "brute_force" not in types([ev(i * 20) for i in range(5)])   
 
 
 def test_rapid_attack():
-    t = types([ev(i * 2) for i in range(10)])                           # 10 in 18s
+    t = types([ev(i * 2) for i in range(10)])                           
     assert {"rapid_attack", "brute_force"} <= t
 
 

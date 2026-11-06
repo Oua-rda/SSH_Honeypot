@@ -8,7 +8,6 @@ SEV_NAME = {v: k for k, v in SEV_RANK.items()}
 LOGIN_TYPES = ["login_failed", "login_success"]
 
 
-# ---------------------------------------------------------------- loading
 def _read(sql, params, db_path):
     conn = get_connection(db_path)
     try:
@@ -54,7 +53,6 @@ def _iso(series):
     return series.dt.strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
-# ------------------------------------------------------------- statistics
 def overview(attacks, alerts) -> dict:
     et = attacks["event_type"]
     return {

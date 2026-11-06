@@ -1,5 +1,3 @@
-"use strict";
-
 const $ = (id) => document.getElementById(id);
 const state = { by: "hour", page: 0, pageSize: 15 };
 const charts = {};
@@ -11,7 +9,6 @@ Chart.defaults.color = "#9aa59f";
 Chart.defaults.borderColor = "#232826";
 Chart.defaults.font.family = "'JetBrains Mono', 'Fira Code', Consolas, monospace";
 
-// ---------- safe DOM helpers (never innerHTML: attacker text stays plain text)
 function el(tag, props = {}, ...kids) {
   const node = document.createElement(tag);
   for (const [k, v] of Object.entries(props)) {
@@ -42,7 +39,6 @@ function renderTable(id, headers, rows, onRow) {
   box.replaceChildren(el("table", {}, head, body));
 }
 
-// ---------- API access
 function qs(extra = {}) {
   const p = new URLSearchParams();
   for (const id of ["start", "end", "ip"]) {
@@ -73,7 +69,6 @@ function draw(id, config) {
 
 const baseOpts = { responsive: true, maintainAspectRatio: false };
 
-// ---------- loaders
 async function loadStatus() {
   const r = await fetch("/api/honeypot/status");
   const s = await r.json();
@@ -209,7 +204,6 @@ async function showDetail(id) {
   } catch (e) { showError(e.message); }
 }
 
-// ---------- wiring
 function updateLinks() {
   const q = qs();
   $("dl-attacks").href = "/api/export/attacks.csv" + (q ? "?" + q : "");

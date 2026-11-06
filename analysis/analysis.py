@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 
 import matplotlib
-matplotlib.use("Agg")                 # draw to files, no window needed
+matplotlib.use("Agg")               
 import matplotlib.pyplot as plt
 
 from analysis.statistics import summary

@@ -34,7 +34,7 @@ def test_overview_and_ranking(tmp_path):
     assert s["overview"]["failed_logins"] == 4
     assert s["overview"]["successful_logins"] == 1
     assert s["overview"]["unique_ips"] == 2
-    assert s["top_ips"][0]["source_ip"] == "10.0.0.1"      # most failures first
+    assert s["top_ips"][0]["source_ip"] == "10.0.0.1"      
 
 
 def test_ip_and_date_filters(tmp_path):

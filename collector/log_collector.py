@@ -1,4 +1,3 @@
-
 import argparse
 import hashlib
 import json
@@ -16,7 +15,6 @@ DEFAULT_LOG = os.environ.get(
 )
 DEFAULT_STATE = Path("data/collector_state.json")
 
-# Cowrie eventid -> our simplified event type
 RELEVANT_EVENTS = {
     "cowrie.session.connect": "connect",
     "cowrie.login.failed": "login_failed",
@@ -59,8 +57,7 @@ def parse_line(raw: str) -> Optional[dict]:
 
     event_type = RELEVANT_EVENTS.get(data.get("eventid"))
     if event_type is None:
-        return None  # valid Cowrie event we don't need (e.g. client.version)
-
+        return None  
     missing = [f for f in REQUIRED_FIELDS if not data.get(f)]
     if missing:
         log.warning("Skipping %s event, missing fields: %s", data["eventid"], missing)
@@ -72,7 +69,7 @@ def parse_line(raw: str) -> Optional[dict]:
     return {
         "event_id": hashlib.sha256(raw.encode("utf-8")).hexdigest(),
         "event_type": event_type,
-        "timestamp": data["timestamp"],            # ISO 8601, UTC
+        "timestamp": data["timestamp"],            
         "source_ip": data["src_ip"],
         "session_id": data["session"],
         "username": data.get("username"),
@@ -120,7 +117,7 @@ class LogReader:
                 if not line:
                     break
                 if not line.endswith(b"\n"):
-                    break  # partial line still being written; retry next run
+                    break  
                 state["offset"] = f.tell()
                 event = parse_line(line.decode("utf-8", errors="replace"))
                 if event:
